@@ -6,6 +6,7 @@
   <li><a href="#introduction">Introduction</a></li>
   <li><a href="#courses">Courses</a></li>
   <li><a href="#certifications">Certifications</a></li>
+  <li><a href="#projects">Projects</a></li>
 </ol>
 </details>
 
