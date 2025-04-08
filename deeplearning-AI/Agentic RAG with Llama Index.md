@@ -1,17 +1,17 @@
-#short-course  #rag 
+Tags: #short-course  #rag 
 ## Router Query Engine
 Normally when making a rag you pass your query to the LLM where it uses the vector search tool to find the most common vector grabbed from your document(s). You can take this one step further by having a vector and summarize tool, a vector tool is just searching for the most similar vectors while a summarize tool is retrieving everything, so the whole document.
 
+### Embeddings
 To start of we need to load in our document and get the nodes from it:
-
-### This first block is used to get our open ai api key, this was just given in the lecture but is not to important, its just for ease of use
+- This first block is used to get our open ai api key, this was just given in the lecture but is not to important, its just for ease of use
 ```python
 from helper import get_openai_api_key
 
 OPENAI_API_KEY = get_openai_api_key()
 ```
 
-### This next block is to load in our documents, we simply specify the input files and then load our data, once we do this we can immediately go to the node and vector steps
+- This next block is to load in our documents, we simply specify the input files and then load our data, once we do this we can immediately go to the node and vector steps
 ```python
 from llama_index.core import SimpleDirectoryReader
 
@@ -19,7 +19,7 @@ from llama_index.core import SimpleDirectoryReader
 documents = SimpleDirectoryReader(input_files=["metagpt.pdf"]).load_data()
 ```
 
-### This next step allows us to split the document into chunks then get nodes from them.
+- This next step allows us to split the document into chunks then get nodes from them.
 ```python
 from llama_index.core.node_parser import SentenceSplitter
 
@@ -27,18 +27,19 @@ splitter = SentenceSplitter(chunk_size=1024)
 nodes = splitter.get_nodes_from_documents(documents)
 ```
 
-### SETTINGS!!! This next step allows us to get out model, we set our LLM and Embeddings model so we can use later
+### LLM Settings
+- SETTINGS!!! This next step allows us to get out model, we set our LLM and Embeddings model so we can use later
 ```python
 from llama_index.core import Settings
 from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.openai import OpenAIEmbedding
 
-Settings.llm = OpenAI(model="gpt###3.5###turbo")
-Settings.embed_model = OpenAIEmbedding(model="text###embedding###ada###002")
+Settings.llm = OpenAI(model="gpt-3.5-turbo")
+Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 ```
 
-
-### We now can get our summary and vector index, like mentioned above summary will get all, and vector will get most similar
+## Index Tools
+- We now can get our summary and vector index, like mentioned above summary will get all, and vector will get most similar
 ```python
 from llama_index.core import SummaryIndex, VectorStoreIndex
 
@@ -46,7 +47,7 @@ summary_index = SummaryIndex(nodes)
 vector_index = VectorStoreIndex(nodes)
 ```
 
-### We now will start setting up our tools, by turning each index into a tool we can allow our LLM to start using our document and to become a true rag.
+- We now will start setting up our tools, by turning each index into a tool we can allow our LLM to start using our document and to become a true rag.
 ```python
 summary_query_engine = summary_index.as_query_engine(
     response_mode="tree_summarize",
@@ -55,7 +56,7 @@ summary_query_engine = summary_index.as_query_engine(
 vector_query_engine = vector_index.as_query_engine()
 ```
 
-### Now that we have made our engines we can turn on our tools, 
+- Now that we have made our engines we can turn on our tools, 
 ```python
 from llama_index.core.tools import QueryEngineTool
 
@@ -75,7 +76,8 @@ vector_tool = QueryEngineTool.from_defaults(
 )
 ```
 
-### To retrieve our data we can either use the LLM to get json files or an api to get pydantic objects, in this case we will use our LLM.
+### Router
+- To retrieve our data we can either use the LLM to get json files or an api to get pydantic objects, in this case we will use our LLM.
 ```python
 from llama_index.core.query_engine.router_query_engine import RouterQueryEngine
 from llama_index.core.selectors import LLMSingleSelector
@@ -95,7 +97,7 @@ print(str(response))
 
 ```
 
-### If lets say we wanted to make a new rag but with a different document, we can do this:
+- If lets say we wanted to make a new rag but with a different document, we can do this:
 ```python
 from utils import get_router_query_engine
 
@@ -112,13 +114,13 @@ In this part we can tell and provide our LLM with functions to use as tools, an 
 ```python
 from llama_index.core.tools import FunctionTool
 
-def add(x: int, y: int) ###> int:
+def add(x: int, y: int) -> int:
     """Adds two integers together."""
     return x + y
 
-def mystery(x: int, y: int) ###> int: 
+def mystery(x: int, y: int) -> int: 
     """Mystery function that operates on top of two numbers."""
-    return (x + y) ### (x + y)
+    return (x + y) - (x + y)
 
 
 add_tool = FunctionTool.from_defaults(fn=add)
@@ -128,7 +130,7 @@ mystery_tool = FunctionTool.from_defaults(fn=mystery)
 ```python
 from llama_index.llms.openai import OpenAI
 
-llm = OpenAI(model="gpt###3.5###turbo")
+llm = OpenAI(model="gpt-3.5-turbo")
 response = llm.predict_and_call(
     [add_tool, mystery_tool], 
     "Tell me the output of the mystery function on 2 and 9", 
@@ -137,9 +139,10 @@ response = llm.predict_and_call(
 print(str(response))
 ```
 
+### Metadata Based Retrieval
 In our code we are using our two functions to make some tools, then we are giving them to our LLM so our query has tools it can call on to meet our request. 
 
-### This example is where instead of using an LLM to retrieve data we use meta data to do so instead, in our example we make our vector index as normal and when we make our query engine we specify some meta data filters so we can make our query.
+- This example is where instead of using an LLM to retrieve data we use meta data to do so instead, in our example we make our vector index as normal and when we make our query engine we specify some meta data filters so we can make our query.
 ```python
 from llama_index.core import VectorStoreIndex
 from llama_index.core.vector_stores import MetadataFilters
@@ -157,11 +160,11 @@ query_engine = vector_index.as_query_engine(
 )
 
 response = query_engine.query(
-    "What are some high###level results of MetaGPT?", 
+    "What are some high-level results of MetaGPT?", 
 )
 ```
 
-### We will now combine our function tool and metadata rag to make it so that based on our query and metadata filters our LLM will think of relevant filters for our query, this results in more precise retrieval since our LLM will be restricted to more concentrated content.
+- We will now combine our function tool and metadata rag to make it so that based on our query and metadata filters our LLM will think of relevant filters for our query, this results in more precise retrieval since our LLM will be restricted to more concentrated content.
 ```python
 from typing import List
 from llama_index.core.vector_stores import FilterCondition
@@ -170,7 +173,7 @@ from llama_index.core.vector_stores import FilterCondition
 def vector_query(
     query: str, 
     page_numbers: List[str]
-) ###> str:
+) -> str:
     """Perform a vector search over an index.
     
     query (str): the string query to be embedded.
@@ -200,17 +203,17 @@ vector_query_tool = FunctionTool.from_defaults(
 )
 ```
 
-### Here we use the same LLM function as before but the tool is a metadata query engine so our results will be more concise and accurate.
+- Here we use the same LLM function as before but the tool is a metadata query engine so our results will be more concise and accurate.
 ```python
-llm = OpenAI(model="gpt###3.5###turbo", temperature=0)
+llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
 response = llm.predict_and_call(
     [vector_query_tool], 
-    "What are the high###level results of MetaGPT as described on page 2?", 
+    "What are the high-level results of MetaGPT as described on page 2?", 
     verbose=True
 )
 ```
 
-### Now we will combine our previous lesson to create a tool picking system!
+- Now we will combine our previous lesson to create a tool picking system!
 ```python
 from llama_index.core import SummaryIndex
 from llama_index.core.tools import QueryEngineTool
@@ -257,7 +260,7 @@ vector_tool, summary_tool = get_doc_tools("metagpt.pdf", "metagpt")
 
 from llama_index.llms.openai import OpenAI
 
-llm = OpenAI(model="gpt###3.5###turbo", temperature=0)
+llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
 
 from llama_index.core.agent import FunctionCallingAgentWorker
 from llama_index.core.agent import AgentRunner
@@ -277,12 +280,12 @@ response = agent.query(
 
 In the response it has steps, it calls the function, gets the output, repeats these two, then our LLM takes this in to give our answer, this is chain of thought.
 
+### Agent Debugging
 With agent control we can have: 
-### More flexibility with tasks, 
-### Deeper insights for each step allowing for debugging
-### The ability to steer the LLM into the right direction.
-
-### Debugging code example with steering
+- More flexibility with tasks, 
+- Deeper insights for each step allowing for debugging
+- The ability to steer the LLM into the right direction.
+- Debugging code example with steering
 ```python
 agent_worker = FunctionCallingAgentWorker.from_tools(
     [vector_tool, summary_tool], 
@@ -327,7 +330,7 @@ print(str(response))
 ##  Building a Multi-Document Agent
 Now we will make an Agent that has multiple documents it can search through, our setup will be:
 
-### Docs
+- Docs
 ```python
 urls = [
     "https://openreview.net/pdf?id=VtmBAGCN7o",
@@ -342,7 +345,7 @@ papers = [
 ]
 ```
 
-### tools for each doc
+- tools for each doc
 ```python
 from utils import get_doc_tools
 from pathlib import Path
@@ -356,16 +359,16 @@ for paper in papers:
 initial_tools = [t for paper in papers for t in paper_to_tools_dict[paper]]
 ```
 
-### LLM
+- LLM
 ```python
 from llama_index.llms.openai import OpenAI
 
-llm = OpenAI(model="gpt###3.5###turbo")
+llm = OpenAI(model="gpt-3.5-turbo")
 ```
 
 All we did was get our tools for each doc and LLM, our agent has a doc, and for each doc a vector and summary tool. When we ask our agent a question it will use the right tools based on the document it needs.
 
-### agent with multi docs
+- agent with multi docs
 ```python
 from llama_index.core.agent import FunctionCallingAgentWorker
 from llama_index.core.agent import AgentRunner
@@ -382,13 +385,13 @@ response = agent.query(
     "and then tell me about the evaluation results"
 )
 
-response = agent.query("Give me a summary of both Self###RAG and LongLoRA")
+response = agent.query("Give me a summary of both Self-RAG and LongLoRA")
 print(str(response))
 ```
 
 Now we will try with 11 papers and like last time, this can take time:
 
-### papers
+- papers
 ```python
 from utils import get_doc_tools
 from pathlib import Path
@@ -402,9 +405,9 @@ for paper in papers:
 all_tools = [t for paper in papers for t in paper_to_tools_dict[paper]]
 ```
 
+### RAG Tools
 With all these tools it may be hard for our LLM to know what to do, so we will do rag on our tools to retrieve the most relevant tool for our query.
-
-### rag tools
+- rag tools
 ```python
 # define an "object" index and retriever over these tools
 from llama_index.core import VectorStoreIndex
@@ -419,8 +422,7 @@ obj_retriever = obj_index.as_retriever(similarity_top_k=3)
 
 
 ```
-
-### agent with rag tools
+- agent with rag tools
 ```python
 from llama_index.core.agent import FunctionCallingAgentWorker
 from llama_index.core.agent import AgentRunner
@@ -439,7 +441,7 @@ agent = AgentRunner(agent_worker)
 
 response = agent.query(
     "Tell me about the evaluation dataset used "
-    "in MetaGPT and compare it against SWE###Bench"
+    "in MetaGPT and compare it against SWE-Bench"
 )
 print(str(response))
 ```

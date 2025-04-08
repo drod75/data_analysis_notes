@@ -1,9 +1,10 @@
 # Data Journey
-#intro
+Tags: #info
 <details open>
 <summary>Table of Contents</summary>
 <ol>
   <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#journaling">Journaling</a></li>
   <li><a href="#courses">Courses</a></li>
   <li><a href="#certifications">Certifications</a></li>
   <li><a href="#projects">Projects</a></li>
@@ -11,10 +12,15 @@
 </details>
 
 ## Introduction
-Hi, my name is David Rodriguez and I made this repository was made to monitor the various notes I will take related to Data Analysis, these notes include topics from Various Courses from Coursera, and Youtube, the technologies these courses talk about will vary and paint a picture of the various tools I know how to use and learned about. I created this repository so I could keep track of my notes through various devices and be able to have one place where everything can be done and kept, my main source of note taking is Obsidian because I like the UI and the various plugins I have access to, I like how it looks simple and not in your face like other note taking apps like Notion. Any online course I take from the Month of April in the year 2025 will be noted here, any achievements related to these courses and projects will also be kept here for ease of use and memory. Have a great time reading my notes and make sure to have some fun and contact me with any Buisness Oppertunities that you think come up if I meet your certain requirements or interest, have a good day!
+Hi, my name is David Rodriguez and I made this repository was made to monitor the various notes I will take related to Data Analysis, these notes include topics from Various Courses from Coursera, and Youtube, the technologies these courses talk about will vary and paint a picture of the various tools I know how to use and learned about. I created this repository so I could keep track of my notes through various devices and be able to have one place where everything can be done and kept, my main source of note taking is Obsidian because I like the UI and the various plugins I have access to, I like how it looks simple and not in your face like other note taking apps like Notion. Any online course I take from the Month of April in the year 2025 will be noted here, any achievements related to these courses and projects will also be kept here for ease of use and memory. Have a great time reading my notes and make sure to have some fun and contact me with any Business Opportunities that you think come up if I meet your certain requirements or interest, have a good day!
+
+## Journaling
+I usually take these notes in obsidian, and the plugins I use will be shown below as an image, the setup I use on Obsidian is more theme and quality of life based as I do not need much, I do not really use the graph function since it looks ugly and boring, besides that the image below has all my plugins!
+
+![plugins_here](plugins.png)
 
 ## Courses
-The courses included in this repository right now are, my main source of courses are either Youtube or Coursera, since NYC has the Coursera Program from the Department of Labour I thankfully have a source to learn from that is not a lot per year. Besides Coursera I use Youtube since the amount of free content is unlimited but there is a wide range of quality, my main source of tutorials is either FreeCodeCamp or even solo youtubers that post great content.
+The courses included in this repository right now are, my main source of courses are either Youtube or Coursera, since NYC has the Coursera Program from the Department of Labor I thankfully have a source to learn from that is not a lot per year. Besides Coursera I use Youtube since the amount of free content is unlimited but there is a wide range of quality, my main source of tutorials is either FreeCodeCamp or even solo youtubers that post great content.
 - [Building Agentic RAG with LlamaIndex](https://www.deeplearning.ai/short-courses/building-agentic-rag-with-llamaindex/)
 
 ## Certifications
