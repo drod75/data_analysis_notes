@@ -1,3 +1,4 @@
+#short-course  #rag 
 ## Router Query Engine
 Normally when making a rag you pass your query to the LLM where it uses the vector search tool to find the most common vector grabbed from your document(s). You can take this one step further by having a vector and summarize tool, a vector tool is just searching for the most similar vectors while a summarize tool is retrieving everything, so the whole document.
 
