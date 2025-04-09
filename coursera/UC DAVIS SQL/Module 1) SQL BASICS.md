@@ -1,0 +1,3 @@
+#sql
+## What is it?
+SQL is a <mark style="background: #BBFABBA6;">Structured Query Language</mark> for relational database management and data manipulation, SQL can be used to query, insert, update, and modify data, it is a non procedural database and is made of key words. SQL is all about data, it can be used to <mark style="background: #BBFABBA6;">read, retrieve, write, and update</mark> data. SQL has many different dialects across Database Management Systems.
