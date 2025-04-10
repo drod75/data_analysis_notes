@@ -123,8 +123,8 @@ The order of operations in SQL(sqlite) is as follows:
 | HAVING   | Group-level filter                    | No                                      |
 | ORDER BY | Output sort order                     | No                                      |
 
-## Subqueries and Joins
-### Subqueries
+
+## Subqueries
 Subqueries and Joins are good to combine and merge data from two different places, both have advantages and disadvantages for what they allow you to do. An example of a query is:
 ```sql
 SELECT
@@ -147,5 +147,77 @@ This selects fields from one table based on when one field is in a particular fi
 
 There is no limit to the amount of subs you can have so this can slow down performance, you can also only retrieve a single column in a sub, this can cause you to have to have multiple selected subqueries which can become a pain due to the sheer mess of code you will have.
 
-### Joins
-tbd
+## Joins
+### Cartesian (Cross) Join
+These allow us to match every row from table to a row from another table, so this is basically <mark style="background: #BBFABBA6;">Many to Many</mark>, an example of cross joins is:
+```sql
+SELECT X, Y FROM SHOES 
+CROSS JOIN WAREHOUSE
+```
+
+### Inner Join
+Inner joins are used to select records that have matching values in both tables, so its a <mark style="background: #BBFABBA6;">one to one join</mark>, the syntax is:
+```sql
+SELECT suppliers.CompanyName
+       ,ProductName
+       ,UnitPrice
+FROM Suppliers INNER JOIN Products
+ON Suppliers.supplierid = Products.supplierid;
+```
+This matches the rows of the two tables based on a column from both tables, so the rows will only match if they have the same values for the columns they are joined on. Inner joins can be done on multiple tables, the thing is this is taxing so be aware of the cost you may get when you do this, an example is:
+```sql
+SELECT o.OrderID, c.CompanyName, e.LastName
+FROM ((Orders o INNER JOIN Customers c ON o.CustomerID = c.CustomerID)
+INNER JOIN Employees e ON o.EmployeeID = e.EmployeeID);
+```
+
+### Self Joins
+If there are two columns you want to join in the same table <mark style="background: #BBFABBA6;">self joins</mark> are an option, it works the same and can be useful to help you understand a table more.
+
+### Left, Right, and Outer
+Left joins and right joins are a<mark style="background: #BBFABBA6;"> many to one and one to many join</mark> respectively, while outer is everything. Some example left join code is:
+```sql
+SELECT C.CustomerName, O.OrderID
+FROM Customers C
+LEFT JOIN Orders O ON C.CustomerID = O.CustomerID
+ORDER BY C.CustomerName;
+```
+This gets all the rows from customers and if possible provides a matching row from orders based on the join clause.
+
+Some right join code is:
+```sql
+SELECT Orders.OrderID,
+       Employees.LastName,
+       Employees.FirstName
+FROM Orders
+RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+ORDER BY Orders.OrderID;
+```
+This is the same thing as left join but has a different order, it doesnt really matter and isn’t a big deal if one dbms supports one and not the other.
+
+Some outer join code is:
+```sql
+SELECT Customers.CustomerName,
+       Orders.OrderID
+FROM Customers
+FULL OUTER JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.CustomerName;
+```
+Remember that outer joins match either or if there is any or not.
+
+### Unions
+They may or may not be used much but when you do use them they are extremely useful. In a union each select statement gets stacked on top of each other, so they must have the same amount of columns to do this and the columns need to be in the same order. Some examples:
+```sql
+-- one
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+
+--two
+SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+```
